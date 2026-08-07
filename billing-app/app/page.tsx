@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 const NAV_HEIGHT = 64;
 
-function scrollToSection(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
+function scrollToSection(e: React.SyntheticEvent, id: string) {
   e.preventDefault();
   gsap.to(window, {
     duration: 1,
@@ -58,7 +58,12 @@ function AnimatedLine({
 // ── Para fades at 2.25s, Veteran at 2.55s, Button at 2.80s
 
 // ── Data ────────────────────────────────────────────────────────────────────
-const services = [
+const services: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  link?: string;
+}[] = [
   {
     icon: (
       <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -68,6 +73,7 @@ const services = [
     title: "IT Construction",
     description:
       "Design and build technology infrastructure for commercial and industrial clients. From network installations to full-scale tech buildouts, we deliver the backbone your operations depend on.",
+    link: "#it-construction",
   },
   {
     icon: (
@@ -78,6 +84,7 @@ const services = [
     title: "Subcontracting",
     description:
       "Reliable, licensed subcontracting for general contractors and project owners. We integrate seamlessly into your workflow and bring specialized trade expertise to every scope of work.",
+    link: "#partnerships",
   },
   {
     icon: (
@@ -88,6 +95,7 @@ const services = [
     title: "Equipment Rental",
     description:
       "Access professional-grade equipment without the overhead. Flexible short and long-term rental terms for construction, infrastructure, and field operations.",
+    link: "#equipment-rental",
   },
 ];
 
@@ -257,21 +265,233 @@ export default function LandingPage() {
             {services.map((s) => (
               <div
                 key={s.title}
-                className="service-card bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md hover:border-orange-100 transition-all group flex flex-col"
+                onClick={s.link ? (e) => scrollToSection(e, s.link!) : undefined}
+                role={s.link ? "button" : undefined}
+                tabIndex={s.link ? 0 : undefined}
+                onKeyDown={
+                  s.link
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") scrollToSection(e, s.link!);
+                      }
+                    : undefined
+                }
+                className={`service-card bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md hover:border-orange-100 transition-all group flex flex-col ${
+                  s.link ? "cursor-pointer" : ""
+                }`}
               >
                 <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center mb-6 group-hover:bg-orange-500 group-hover:text-white transition-colors shrink-0">
                   {s.icon}
                 </div>
                 <h3 className="text-lg font-bold mb-3">{s.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{s.description}</p>
+                {s.link && (
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-orange-500">
+                    Learn more
+                    <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ── Built on Partnerships ───────────────────────────────────────────── */}
+      <section id="partnerships" className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div>
+            <p className="text-xs font-mono tracking-widest uppercase text-orange-500 mb-3">
+              Our Approach
+            </p>
+            <h2
+              className="text-4xl font-bold tracking-tight leading-tight mb-6"
+              style={{ fontFamily: "'Georgia', serif" }}
+            >
+              Built on Partnerships.
+              <br />
+              Backed by <span className="text-orange-500">Precision.</span>
+            </h2>
+
+            <div className="space-y-5 text-gray-600 text-base leading-relaxed">
+              <p>
+                We design and build the physical infrastructure that commercial and industrial
+                partners rely on — from site development and structural construction to
+                full-scale technology buildouts. Whether it&apos;s groundwork, framing, or the
+                systems that power your operations, we deliver work built to last and built to
+                spec.
+              </p>
+              <p>
+                Our contract and partnership model is built for organizations that need a
+                construction partner they can return to, project after project. Clear
+                communication, transparent bidding, and consistent quality mean fewer surprises
+                and stronger long-term relationships.
+              </p>
+            </div>
+
+            <p className="mt-8 text-lg font-semibold text-gray-900">
+              Let&apos;s build what&apos;s next — <span className="text-orange-500">together.</span>
+            </p>
+          </div>
+
+          <div
+            className="relative rounded-2xl overflow-hidden border border-gray-100 shadow-2xl shadow-gray-300/40"
+            style={{ height: "480px" }}
+          >
+            <Image
+              src="/constructionphoto.jpg"
+              alt="PowerDillo construction site"
+              fill
+              className="object-cover"
+              sizes="(min-width: 768px) 50vw, 100vw"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── IT Construction ──────────────────────────────────────────────────── */}
+      <section id="it-construction" className="py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div className="order-2 md:order-1 grid grid-cols-2 gap-4">
+            <div
+              className="col-span-2 relative rounded-2xl overflow-hidden border border-gray-100 shadow-2xl shadow-gray-300/40"
+              style={{ height: "280px" }}
+            >
+              <Image
+                src="/constructionphoto1.jpg"
+                alt="PowerDillo IT infrastructure buildout"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 50vw, 100vw"
+              />
+            </div>
+            <div
+              className="relative rounded-2xl overflow-hidden border border-gray-100 shadow-lg shadow-gray-300/30"
+              style={{ height: "180px" }}
+            >
+              <Image
+                src="/construction2.jpg"
+                alt="PowerDillo network installation"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 25vw, 50vw"
+              />
+            </div>
+            <div
+              className="relative rounded-2xl overflow-hidden border border-gray-100 shadow-lg shadow-gray-300/30"
+              style={{ height: "180px" }}
+            >
+              <Image
+                src="/construction3.jpg"
+                alt="PowerDillo structured cabling work"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 25vw, 50vw"
+              />
+            </div>
+          </div>
+
+          <div className="order-1 md:order-2">
+            <p className="text-xs font-mono tracking-widest uppercase text-orange-500 mb-3">
+              IT Construction
+            </p>
+            <h2
+              className="text-4xl font-bold tracking-tight leading-tight mb-6"
+              style={{ fontFamily: "'Georgia', serif" }}
+            >
+              The Backbone Your
+              <br />
+              Business <span className="text-orange-500">Depends On.</span>
+            </h2>
+
+            <div className="space-y-5 text-gray-600 text-base leading-relaxed">
+              <p>
+                We design, install, and support the technology systems that keep commercial and
+                industrial operations running. From network installations and structured cabling
+                to full-scale IT infrastructure buildouts, we deliver the backbone your business
+                depends on — reliable, scalable, and built for what&apos;s next.
+              </p>
+              <p>
+                Our contract and partnership model means you get a technology partner who
+                understands your operations, not just your equipment list. Clear scoping,
+                transparent timelines, and consistent support turn one-off projects into
+                long-term relationships.
+              </p>
+            </div>
+
+            <p className="mt-8 text-lg font-semibold text-gray-900">
+              Let&apos;s build the systems behind your <span className="text-orange-500">success.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Equipment Rental ─────────────────────────────────────────────────── */}
+      <section id="equipment-rental" className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div>
+            <p className="text-xs font-mono tracking-widest uppercase text-orange-500 mb-3">
+              Equipment Rental
+            </p>
+            <h2
+              className="text-4xl font-bold tracking-tight leading-tight mb-6"
+              style={{ fontFamily: "'Georgia', serif" }}
+            >
+              Security That Moves
+              <br />
+              With Your <span className="text-orange-500">Site.</span>
+            </h2>
+
+            <div className="space-y-5 text-gray-600 text-base leading-relaxed">
+              <p>
+                We provide mobile surveillance solutions for active construction and industrial
+                sites — solar and battery-powered camera trailers, live remote monitoring, and
+                motion-activated lighting that deter theft, vandalism, and unauthorized access.
+                Deployed and repositioned as your project progresses, our systems protect
+                equipment and materials around the clock, without relying on site power or
+                permanent infrastructure.
+              </p>
+              <p>
+                Our rental model means you get enterprise-grade security without the upfront
+                investment — flexible terms, fast deployment, and support that scales with your
+                project timeline.
+              </p>
+            </div>
+
+            <p className="mt-8 mb-8 text-lg font-semibold text-gray-900">
+              Let&apos;s keep your site secure, from groundbreaking to{" "}
+              <span className="text-orange-500">completion.</span>
+            </p>
+
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold px-8 py-4 rounded-xl text-sm transition-colors"
+            >
+              Browse Rentals
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+
+          <div
+            className="relative rounded-2xl overflow-hidden border border-gray-100 shadow-2xl shadow-gray-300/40"
+            style={{ height: "480px" }}
+          >
+            <Image
+              src="/rental.jpeg"
+              alt="PowerDillo mobile surveillance camera trailer"
+              fill
+              className="object-cover"
+              sizes="(min-width: 768px) 50vw, 100vw"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* ── Contact ──────────────────────────────────────────────────────────── */}
-      <section id="contact" className="py-24 bg-white">
+      <section id="contact" className="py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 items-start">
 
@@ -389,19 +609,44 @@ export default function LandingPage() {
 
       {/* ── Footer ───────────────────────────────────────────────────────────── */}
       <footer className="bg-gray-950 text-gray-500 py-12 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col items-center gap-4 text-xs text-center">
-          <span className="text-white font-bold text-base tracking-tight">
-            Power<span className="text-orange-500">Dillo</span>
-          </span>
-          <span>IT Construction · Subcontracting · Equipment Rental</span>
-          <p className="text-gray-400 flex items-center gap-2">
-            <span aria-hidden></span>
-            Veteran Owned &amp; Operated — Proudly serving our clients with the same commitment and
-            discipline instilled through military service.
-          </p>
-          <span className="text-gray-600 mt-2">
-            © {new Date().getFullYear()} PowerDillo. All rights reserved.
-          </span>
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row sm:justify-center sm:-translate-x-12 gap-10 sm:gap-16 text-xl text-center sm:text-left">
+
+          {/* Info */}
+          <div className="flex flex-col gap-3 items-center sm:items-start">
+            <span className="text-white font-bold text-3xl tracking-tight">
+              Power<span className="text-orange-500">Dillo</span>
+            </span>
+            <span>IT Construction · Subcontracting · Equipment Rental</span>
+            <p className="text-gray-400 max-w-sm leading-relaxed">
+              Veteran Owned &amp; Operated — Proudly serving our clients with the same commitment
+              and discipline instilled through military service.
+            </p>
+            <span className="text-gray-600 mt-1">
+              © {new Date().getFullYear()} PowerDillo. All rights reserved.
+            </span>
+          </div>
+
+          {/* Links */}
+          <div className="flex flex-col gap-3 items-center sm:items-start shrink-0">
+            <a
+              href="#services"
+              onClick={(e) => scrollToSection(e, "#services")}
+              className="hover:text-orange-500 transition-colors cursor-pointer"
+            >
+              Services
+            </a>
+            <a
+              href="#contact"
+              onClick={(e) => scrollToSection(e, "#contact")}
+              className="hover:text-orange-500 transition-colors cursor-pointer"
+            >
+              Contact
+            </a>
+            <Link href="/dashboard" className="hover:text-orange-500 transition-colors">
+              Rentals &amp; Solutions
+            </Link>
+          </div>
+
         </div>
       </footer>
 
