@@ -8,7 +8,19 @@ import BlueprintAnimation from "@/app/components/BlueprintAnimation";
 import { NavAuthButton } from "@/app/components/NavAuthButton";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+const NAV_HEIGHT = 64;
+
+function scrollToSection(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
+  e.preventDefault();
+  gsap.to(window, {
+    duration: 1,
+    scrollTo: { y: id, offsetY: NAV_HEIGHT },
+    ease: "power3.inOut",
+  });
+}
 
 // ── Letter-by-letter fade-in ─────────────────────────────────────────────────
 function AnimatedLine({
@@ -115,19 +127,27 @@ export default function LandingPage() {
       {/* ── Navigation ───────────────────────────────────────────────────────── */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 shrink-0">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
             <Image src={logo} alt="PowerDillo logo" width={54} height={54} className="rounded-md" />
             <span className="text-2xl font-bold tracking-tight">
               Power<span className="text-orange-500">Dillo</span>
             </span>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-6 ml-auto">
             <div className="hidden sm:flex items-center gap-8 text-sm text-gray-600">
-              <a href="#services" className="font-extrabold hover:text-orange-500 transition-colors">
+              <a
+                href="#services"
+                onClick={(e) => scrollToSection(e, "#services")}
+                className="font-extrabold hover:text-orange-500 transition-colors"
+              >
                 Services
               </a>
-              <a href="#contact" className="font-extrabold hover:text-orange-500 transition-colors">
+              <a
+                href="#contact"
+                onClick={(e) => scrollToSection(e, "#contact")}
+                className="font-extrabold hover:text-orange-500 transition-colors"
+              >
                 Contact
               </a>
               <Link href="/dashboard" className="font-extrabold hover:text-orange-500 transition-colors">
@@ -143,6 +163,15 @@ export default function LandingPage() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gray-950 text-white">
+        <video
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          src="/construction1.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        <div className="absolute inset-0 bg-gray-950/70 pointer-events-none" />
         <div
           className="absolute inset-0 opacity-[0.06] pointer-events-none"
           style={{
@@ -186,6 +215,7 @@ export default function LandingPage() {
 
             <a
               href="#services"
+              onClick={(e) => scrollToSection(e, "#services")}
               className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold px-8 py-4 rounded-xl text-sm transition-colors"
               style={{ opacity: 0, animationName: "fadeInLetter", animationDuration: "0.3s", animationFillMode: "forwards", animationDelay: "2.8s" }}
             >
