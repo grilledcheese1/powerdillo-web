@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
-const TO_EMAIL = "karlmchazlettjr@powerdillo.com";
+const TO_EMAIL = "kmchazlett@powerdillo.com";
 
 export async function POST(req: NextRequest) {
   try {
