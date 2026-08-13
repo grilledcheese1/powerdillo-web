@@ -7,6 +7,7 @@ import Image from "next/image";
 import logo from "../icon.png";
 import SmartCityNetwork from "@/app/components/SmartCityNetwork";
 import { NavAuthButton } from "@/app/components/NavAuthButton";
+import { Footer } from "@/app/components/Footer";
 import { useSession } from "next-auth/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -206,8 +207,10 @@ export default function DashboardPage() {
           </Link>
           <div className="flex items-center gap-6 ml-auto">
             <div className="hidden sm:flex items-center gap-8 text-sm text-gray-600">
+              <Link href="/" className="font-extrabold hover:text-orange-500 transition-colors">Home</Link>
               <Link href="/#services" className="font-extrabold hover:text-orange-500 transition-colors">Services</Link>
-              <Link href="/#contact"  className="font-extrabold hover:text-orange-500 transition-colors">Contact</Link>
+              <Link href="/#contact"  className="font-extrabold hover:text-orange-500 transition-colors">Contact Us</Link>
+              <Link href="/portfolio" className="font-extrabold hover:text-orange-500 transition-colors">Portfolio</Link>
               <Link href="/dashboard" className="font-extrabold text-orange-500">Rentals &amp; Solutions</Link>
             </div>
           </div>
@@ -500,15 +503,7 @@ export default function DashboardPage() {
         </section>
       )}
 
-      {/* ── Footer ───────────────────────────────────────────────────────────── */}
-      <footer className="bg-[#141413] text-gray-500 py-12 px-6 mt-8">
-        <div className="max-w-6xl mx-auto flex flex-col items-center gap-4 text-xs text-center">
-          <span className="text-white font-bold text-base tracking-tight">Power<span className="text-orange-500">Dillo</span></span>
-          <span>IT Construction · Subcontracting · Equipment Rental</span>
-          <p className="text-gray-400">Veteran Owned &amp; Operated — Built on service, driven by results.</p>
-          <span className="text-gray-600 mt-2">© {new Date().getFullYear()} PowerDillo. All rights reserved.</span>
-        </div>
-      </footer>
+      <Footer />
 
     </div>
   );

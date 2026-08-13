@@ -6,6 +6,7 @@ import Image from "next/image";
 import logo from "./icon.png";
 import BlueprintAnimation from "@/app/components/BlueprintAnimation";
 import { NavAuthButton } from "@/app/components/NavAuthButton";
+import { Footer } from "@/app/components/Footer";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
@@ -105,10 +106,32 @@ const serviceOptions = ["IT Construction", "Subcontracting", "Equipment Rental",
 export default function LandingPage() {
   const [formData, setFormData] = useState({ name: "", email: "", service: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   useEffect(() => {
@@ -144,6 +167,9 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-6 ml-auto">
             <div className="hidden sm:flex items-center gap-8 text-sm text-gray-600">
+              <Link href="/" className="font-extrabold hover:text-orange-500 transition-colors">
+                Home
+              </Link>
               <a
                 href="#services"
                 onClick={(e) => scrollToSection(e, "#services")}
@@ -156,8 +182,11 @@ export default function LandingPage() {
                 onClick={(e) => scrollToSection(e, "#contact")}
                 className="font-extrabold hover:text-orange-500 transition-colors"
               >
-                Contact
+                Contact Us
               </a>
+              <Link href="/portfolio" className="font-extrabold hover:text-orange-500 transition-colors">
+                Portfolio
+              </Link>
               <Link href="/dashboard" className="font-extrabold hover:text-orange-500 transition-colors">
                 Rentals &amp; Solutions
               </Link>
@@ -516,7 +545,7 @@ export default function LandingPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                     </svg>
                   </div>
-                  contact@powerdillo.com
+                  kmchazlett@powerdillo.com
                 </div>
                 <div className="flex items-center gap-3 text-gray-600">
                   <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 shrink-0">
@@ -524,7 +553,7 @@ export default function LandingPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
                     </svg>
                   </div>
-                  (555) 000-0000
+                  (512) 348-5883
                 </div>
               </div>
             </div>
@@ -593,11 +622,16 @@ export default function LandingPage() {
                     />
                   </div>
 
+                  {submitError && (
+                    <p className="text-red-500 text-xs">{submitError}</p>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full bg-orange-500 hover:bg-orange-400 text-white font-semibold py-3.5 rounded-xl text-sm transition-colors"
+                    disabled={submitting}
+                    className="w-full bg-orange-500 hover:bg-orange-400 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl text-sm transition-colors"
                   >
-                    Send Message →
+                    {submitting ? "Sending…" : "Send Message →"}
                   </button>
                 </form>
               )}
@@ -607,48 +641,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Footer ───────────────────────────────────────────────────────────── */}
-      <footer className="bg-gray-950 text-gray-500 py-12 px-6">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row sm:justify-center sm:-translate-x-12 gap-10 sm:gap-16 text-xl text-center sm:text-left">
-
-          {/* Info */}
-          <div className="flex flex-col gap-3 items-center sm:items-start">
-            <span className="text-white font-bold text-3xl tracking-tight">
-              Power<span className="text-orange-500">Dillo</span>
-            </span>
-            <span>IT Construction · Subcontracting · Equipment Rental</span>
-            <p className="text-gray-400 max-w-sm leading-relaxed">
-              Veteran Owned &amp; Operated — Proudly serving our clients with the same commitment
-              and discipline instilled through military service.
-            </p>
-            <span className="text-gray-600 mt-1">
-              © {new Date().getFullYear()} PowerDillo. All rights reserved.
-            </span>
-          </div>
-
-          {/* Links */}
-          <div className="flex flex-col gap-3 items-center sm:items-start shrink-0">
-            <a
-              href="#services"
-              onClick={(e) => scrollToSection(e, "#services")}
-              className="hover:text-orange-500 transition-colors cursor-pointer"
-            >
-              Services
-            </a>
-            <a
-              href="#contact"
-              onClick={(e) => scrollToSection(e, "#contact")}
-              className="hover:text-orange-500 transition-colors cursor-pointer"
-            >
-              Contact
-            </a>
-            <Link href="/dashboard" className="hover:text-orange-500 transition-colors">
-              Rentals &amp; Solutions
-            </Link>
-          </div>
-
-        </div>
-      </footer>
+      <Footer />
 
     </div>
   );
